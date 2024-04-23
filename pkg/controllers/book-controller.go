@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -32,10 +31,11 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	bookId := vars["bookId"]
+	bookId := vars["id"]
 	ID, err := strconv.ParseInt(bookId, 0, 0)
+
 	if err != nil {
-		fmt.Println("error while fetching!")
+		helper.CustomError(err)
 	}
 	bookDetails, _ := models.GetBookById(ID)
 	res, _ := json.Marshal(bookDetails)
@@ -50,10 +50,10 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	var updateBook = &models.Book{}
 	utils.ParseBody(r, updateBook)
 	vars := mux.Vars(r)
-	bookId := vars["bookId"]
+	bookId := vars["id"]
 	ID, err := strconv.ParseInt(bookId, 0, 0)
 	if err != nil {
-		fmt.Println("error while fetching")
+		helper.CustomError(err)
 	}
 	bookDetails, db := models.GetBookById(ID)
 	if updateBook.Name != "" {
@@ -74,10 +74,11 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	bookId := vars["bookId"]
+	bookId := vars["id"]
 	ID, err := strconv.ParseInt(bookId, 0, 0)
+
 	if err != nil {
-		fmt.Println("error while fetching")
+		helper.CustomError(err)
 	}
 	book := models.DeleteBook(ID)
 	res, _ := json.Marshal(book)
